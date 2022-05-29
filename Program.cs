@@ -13,6 +13,7 @@ namespace ProgrammingLanguage1
                 string file = args[0];
                 string[] lines = System.IO.File.ReadAllLines(file);
                 foreach (string line in lines){
+                    
                     parsecommand(line);
                 }
                 Console.ReadKey();
@@ -23,7 +24,8 @@ namespace ProgrammingLanguage1
         }
         public static void parsecommand(string line){
             string[] words = line.Split(' ');
-            string command = words[0];
+            string command = words[0].ToLower();
+
             switch (command){
                 case "print":
                     commandFuncs.print(words);
@@ -37,9 +39,30 @@ namespace ProgrammingLanguage1
                 case "title":
                     Console.Title = words[1];
                     break;
-
-
-
+                case "setvar":
+                    commandFuncs.setVariable(words);
+                    break;
+                case "printvar":
+                    commandFuncs.printVariable(words);
+                    break;
+                case "exit":
+                    Environment.Exit(0);
+                    break;
+                case "clear":
+                    Console.Clear();
+                    break;
+                case "line":
+                    Console.Write("\n");
+                    break;
+                case "clearmem":
+                    commandFuncs.memFlush(words);
+                    break;
+                case "var":
+                    commandFuncs.Add(words);
+                    break;
+                case "listvar":
+                    commandFuncs.ListVar(words);
+                    break;
                 default:
                     break;
             }}}
@@ -97,17 +120,35 @@ namespace ProgrammingLanguage1
 
         }
         public static void Add           (string[] args){
+            
             Program.variables.Add(args[1], args[2]);
         }
-        public static void clearVariables(string[] args){
-            Console.WriteLine("Do you want to clear all variables? (y/n)");
-            char input = Console.ReadKey().KeyChar;
-            if (input == 'y')
+        public static void ListVar(string[] args){
+            foreach (string var1 in Program.variables.Keys)
             {
-                Console.Clear();
-                Console.Write("Deleting all variables...");
-                Program.variables.Clear();
+                Console.WriteLine(var1 + ": " + Program.variables[var1]);
             }
+        }
+
+
+    
+        public static void memFlush      (string[] args){
+            if (args.Length > 1)
+            {
+                if (args[1] == "auto")
+                {Program.variables.Clear(); }
+                else {
+                    Console.WriteLine("Do you want to clear all variables? (y/n)");
+                    char input = Console.ReadKey().KeyChar;
+                    if (input == 'y')
+                    {
+                        Console.Clear();
+                        Console.Write("Deleting all variables...");
+                        Program.variables.Clear();
+                    }
+                }
+            }
+            
             
             
         }
